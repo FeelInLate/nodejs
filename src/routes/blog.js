@@ -4,7 +4,7 @@ const {
   getBlogDetail,
   createNewBlog,
   updateBlog,
-  deleteBlog 
+  deleteBlog,
 } = require("../controllers/blog");
 
 // 处理博客相关的路由
@@ -16,44 +16,54 @@ const handleBlogRoute = (req, res) => {
 
   // 博客列表路由
   if (method === "GET" && req.path === "/api/blog/list") {
-    // /api/blog/list?author=zhangsan&keyword=123
-    // new SuccessModel()
+
     const author = req.query.author || "";
     const keyword = req.query.keyword || "";
-    const listData = getBlogsList(author, keyword);
+    const listDataPromise = getBlogsList(author, keyword);
+    return listDataPromise.then(listData => {
+      return new SuccessModel(listData);
+    });
 
-    return new SuccessModel(listData);
   }
   // 博客详情路由
   if (method === "GET" && req.path === "/api/blog/detail") {
-    const detailData = getBlogDetail(id);
-
-    return new SuccessModel(detailData);
+    const detailDataPromise = getBlogDetail(id);
+    return detailDataPromise.then(detailData => {
+      return new SuccessModel(detailData); 
+    })
   }
   // 新增博客路由
   if (method === "POST" && req.path === "/api/blog/new") {
-    const newBlogData = createNewBlog(blogData);
+    const author = '王五';
+    req.body.author = author;
+    const newBlogDataPromise = createNewBlog(blogData);
 
-    return new SuccessModel(newBlogData);
+    return newBlogDataPromise.then(newBlogData => {
+      return new SuccessModel(newBlogData);
+    })
   }
   // 更新博客路由
   if (method === "POST" && req.path === "/api/blog/update") {
-    const updateBlogData = updateBlog(id, blogData);
-
-    if(updateBlogData) {
-        return new SuccessModel('更新博客成功!');
-    }else {
-        return new ErrorModel('更新博客失败...')
-    }
+    const updateBlogPromise = updateBlog(id, blogData);
+    return updateBlogPromise.then(updateBlogData => {
+      if (updateBlogData) {
+        return new SuccessModel("更新博客成功!");
+      } else {
+        return new ErrorModel("更新博客失败...");
+      }
+    });
   }
   // 删除博客路由
   if (method === "POST" && req.path === "/api/blog/delete") {
-    const deleteBlogData =  deleteBlog(id);
-    if(deleteBlogData) {
-        return new SuccessModel('删除博客成功!');
-    }else {
-        return new ErrorModel('删除博客失败...')
-    }
+    const author = 'zhangsan';
+    const deleteBlogPromise = deleteBlog(id, author);
+    return deleteBlogPromise.then(deleteBlogData => {
+      if (deleteBlogData) {
+        return new SuccessModel("删除博客成功!");
+      } else {
+        return new ErrorModel("删除博客失败...");
+      }
+    });
   }
 };
 module.exports = handleBlogRoute;

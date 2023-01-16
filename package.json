@@ -4,12 +4,15 @@
   "description": "",
   "main": "bin/www.js",
   "scripts": {
-    "dev": "nodemon bin/www.js" 
+    "dev": "nodemon bin/www.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^2.0.20"
+  },
+  "dependencies": {
+    "mysql": "^2.18.1"
   }
 }
